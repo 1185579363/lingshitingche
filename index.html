@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#202b39">
+  <meta name="description" content="临时停车，请多关照。联系车主挪车。">
+  <title>浙D·J3S33 · 临时停车</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { color-scheme: dark; font-family: Arial, "Microsoft YaHei", sans-serif; background: #202b39; color: #fff; }
+    body { margin: 0; min-height: 100vh; min-height: 100svh; }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 3px solid #a3d4ff; outline-offset: 5px; }
+    .page { width: min(100%, 520px); margin: auto; container-type: inline-size; padding-top: 21.84svh; padding-bottom: 70px; }
+    .notice { width: 90%; height: 16cqw; min-height: 60px; margin: 0 auto; position: relative; display: flex; align-items: center; justify-content: center; background: #fff; color: #333; border-radius: 2cqw; box-shadow: 0 0 2.8cqw #ffffff80; }
+    .plate { position: absolute; top: -4.2cqw; left: 50%; transform: translateX(-50%); background: #8d8e8e; color: #fff; border-radius: 9cqw; padding: 1.7cqw 3.8cqw; line-height: 1.15; font-size: 4.05cqw; font-weight: 400; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis; }
+    .greeting { margin: 0; padding-top: .3cqw; font-size: 4.05cqw; line-height: 1.5; font-weight: 400; }
+    .actions { margin: 14.5cqw auto 0; width: 80%; display: grid; gap: 7.8cqw; }
+    .action { display: flex; align-items: center; justify-content: center; width: 100%; height: 12.3cqw; min-height: 48px; border: 0; border-radius: 2cqw; background: #1989fa; color: white; text-decoration: none; font-size: 4.65cqw; font-weight: 700; line-height: 1.2; transition: background .15s, transform .15s; }
+    .action:hover { background: #087bed; }
+    .action:active { transform: scale(.98); }
+    .settings-link { display: block; border: 0; background: none; color: #a9b4c1; font-size: 12px; margin: 0 auto 20px; padding: 12px 18px; }
+    footer { position: fixed; bottom: 0; width: 100%; }
+    dialog { color-scheme: light; color: #263140; background: #fff; border: none; border-radius: 18px; width: min(90vw, 420px); padding: 25px; max-height: 85svh; overflow: auto; box-shadow: 0 20px 70px #0006; }
+    dialog::backdrop { background: #101823bb; }
+    dialog h2 { font-size: 21px; margin: 0 0 12px; }
+    dialog p { font-size: 14px; line-height: 1.7; color: #607083; margin: 8px 0 18px; }
+    label { display: grid; gap: 7px; font-size: 14px; margin: 16px 0; }
+    input { width: 100%; padding: 12px; border: 1px solid #ccd4dc; border-radius: 8px; background: #fff; color: #263140; font-size: 16px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-actions button { flex: 1; padding: 12px 8px; border: none; border-radius: 8px; background: #eaf0f6; color: #35465a; font-size: 14px; }
+    .modal-actions .primary { background: #1989fa; color: white; }
+    .wechat-id { display: block; width: 100%; text-align: center; font-size: 22px; font-weight: bold; padding: 20px 8px; background: #eef5fc; border-radius: 10px; overflow-wrap: anywhere; user-select: all; }
+    .hint { margin-top: 16px; font-size: 12px; color: #65758a; line-height: 1.7; }
+    #toast { position: fixed; bottom: 78px; left: 50%; transform: translateX(-50%); width: max-content; max-width: 88vw; padding: 13px 18px; border-radius: 10px; background: #0d1524ee; color: #fff; font-size: 14px; text-align: center; box-shadow: 0 4px 20px #0004; z-index: 5; }
+    #toast:empty { display: none; }
+    @media (max-height: 600px) { .page { padding-top: 15svh; } footer { position: static; } }
+    @media (prefers-reduced-motion: reduce) { .action { transition: none; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="notice" aria-label="临时停车信息">
+      <span class="plate" id="plate">浙D·J3S33</span>
+      <h1 class="greeting">临时停车,请多关照</h1>
+    </section>
+    <nav class="actions" aria-label="联系车主">
+      <a class="action" id="call" href="tel:18966020855">电话通知车主挪车</a>
+      <button class="action" id="wechat" type="button">微信通知车主挪车</button>
+      <a class="action" id="sms" href="sms:18966020855?body=%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%82%A8%E7%9A%84%E7%88%B1%E8%BD%A6%EF%BC%88%E6%B5%99D%C2%B7J3S33%EF%BC%89%E9%9C%80%E8%A6%81%E6%8C%AA%E4%B8%80%E4%B8%8B%EF%BC%8C%E9%BA%BB%E7%83%A6%E6%82%A8%E5%B0%BD%E5%BF%AB%E8%BF%87%E6%9D%A5%EF%BC%8C%E8%B0%A2%E8%B0%A2%EF%BC%81">短信通知车主挪车</a>
+    </nav>
+  </main>
+  <footer><button class="settings-link" id="settings" type="button">车主设置</button></footer>
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <form id="settings-form">
+      <h2 id="settings-title">车主设置</h2>
+      <p>填写联系方式，方便他人联系您挪车。</p>
+      <label>车牌号<input id="plate-input" name="plate" maxlength="12" required="" autocomplete="off" placeholder="例如：京NFC252"></label>
+      <label>联系电话<input id="phone-input" name="phone" type="tel" inputmode="tel" maxlength="20" pattern="[+0-9 ()-]{5,20}" placeholder="填写车主手机号" autocomplete="tel"></label>
+      <label>微信号<input id="wechat-input" name="wechat" maxlength="64" placeholder="填写微信号（选填）" autocomplete="off"></label>
+      <div class="modal-actions"><button type="button" id="cancel-settings">取消</button><button type="submit" class="primary">保存设置</button></div>
+      <div class="modal-actions"><button type="button" id="download">下载配置好的 HTML</button></div>
+      <div class="hint">保存仅在当前浏览器生效。给其他人使用时，请下载配置好的 HTML 再分享或部署。页面中的联系方式会对访问者可见。</div>
+    </form>
+  </dialog>
+  <dialog id="wechat-dialog" aria-labelledby="wechat-title">
+    <h2 id="wechat-title">微信联系车主</h2>
+    <p>复制微信号后，打开微信搜索添加车主。</p>
+    <span class="wechat-id" id="wechat-value"></span>
+    <div class="modal-actions"><button type="button" id="close-wechat">关闭</button><button class="primary" type="button" id="copy-wechat">复制微信号</button></div>
+    <div class="hint">添加时请备注“挪车”。此页面不会自动发送微信消息。</div>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <!-- 可直接修改这里的默认配置；也可在页面底部的“车主设置”中填写并下载。 -->
+  <script id="owner-config" type="application/json">{"plate":"浙D·J3S33","phone":"18966020855","wechat":"Getrichi_"}</script>
+  <script>
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const defaults = JSON.parse($('owner-config').textContent);
+      const storageKey = 'parking-owner-v1:' + JSON.stringify(defaults);
+      let config = { ...defaults };
+      try { const saved = JSON.parse(localStorage.getItem(storageKey)); if (saved && typeof saved === 'object') for (const key of ['plate', 'phone', 'wechat']) if (typeof saved[key] === 'string') config[key] = saved[key]; } catch (_) {}
+      let timer;
+      function toast(message) { clearTimeout(timer); $('toast').textContent = message; timer = setTimeout(() => { $('toast').textContent = ''; }, 3500); }
+      function render() {
+        $('plate').textContent = config.plate;
+        document.title = config.plate + ' · 临时停车';
+        const phone = config.phone.replace(/[^+\d]/g, '');
+        $('call').setAttribute('href', phone ? 'tel:' + phone : '#');
+        const body = encodeURIComponent('您好，您的爱车（' + config.plate + '）需要挪一下，麻烦您尽快过来，谢谢！');
+        const separator = /iPad|iPhone|iPod/.test(navigator.userAgent) ? '&' : '?';
+        $('sms').setAttribute('href', phone ? 'sms:' + phone + separator + 'body=' + body : '#');
+      }
+      function openSettings() {
+        for (const key of ['plate', 'phone', 'wechat']) $(key + '-input').value = config[key];
+        $('settings-dialog').showModal();
+      }
+      function collect() { return { plate: $('plate-input').value.trim().toUpperCase(), phone: $('phone-input').value.trim(), wechat: $('wechat-input').value.trim() }; }
+      function validate() { if (!$('settings-form').reportValidity()) return false; if (!$('plate-input').value.trim()) { toast('请填写车牌号'); return false; } return true; }
+      $('settings').addEventListener('click', openSettings);
+      $('cancel-settings').addEventListener('click', () => $('settings-dialog').close());
+      $('settings-form').addEventListener('submit', event => {
+        event.preventDefault(); if (!validate()) return;
+        config = collect(); render();
+        try { localStorage.setItem(storageKey, JSON.stringify(config)); toast('设置已保存'); }
+        catch (_) { toast('当前浏览器无法保存，请下载配置好的 HTML'); }
+        $('settings-dialog').close();
+      });
+      for (const id of ['call', 'sms']) $(id).addEventListener('click', event => {
+        if (!config.phone) { event.preventDefault(); toast('车主尚未填写联系电话，请在“车主设置”中填写'); }
+      });
+      $('wechat').addEventListener('click', () => {
+        if (!config.wechat) { toast('车主尚未填写微信号，请尝试电话或短信联系'); return; }
+        $('wechat-value').textContent = config.wechat; $('wechat-dialog').showModal();
+      });
+      $('close-wechat').addEventListener('click', () => $('wechat-dialog').close());
+      $('copy-wechat').addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(config.wechat); toast('微信号已复制，请打开微信搜索'); }
+        catch (_) { const range = document.createRange(); range.selectNodeContents($('wechat-value')); const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range); toast('请长按微信号或按 Ctrl+C 复制'); }
+      });
+      $('download').addEventListener('click', () => {
+        if (!validate()) return;
+        const owner = collect();
+        const clone = document.documentElement.cloneNode(true);
+        clone.querySelector('#owner-config').textContent = JSON.stringify(owner).replace(/</g, '\\u003c');
+        clone.querySelector('#plate').textContent = owner.plate;
+        clone.querySelector('title').textContent = owner.plate + ' · 临时停车';
+        clone.querySelectorAll('dialog').forEach(node => node.removeAttribute('open'));
+        clone.querySelectorAll('input').forEach(node => node.removeAttribute('value'));
+        clone.querySelector('#toast').textContent = '';
+        clone.querySelector('#wechat-value').textContent = '';
+        const url = URL.createObjectURL(new Blob(['<!DOCTYPE html>\n' + clone.outerHTML], { type: 'text/html;charset=utf-8' }));
+        const link = document.createElement('a'); link.href = url; link.download = '临时停车.html'; link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        toast('已下载，分享时请使用下载后的文件');
+      });
+      render();
+    })();
+  </script>
+
+
+</body><button id="voicecraft-lite-floating-button" type="button" title="朗读选中文字" aria-label="朗读选中文字" hidden="" style="position: fixed; z-index: 2147483647; width: 38px; height: 38px; padding: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 999px; background: linear-gradient(135deg, rgb(95, 125, 245) 0%, rgb(49, 87, 219) 100%); box-shadow: rgba(49, 87, 219, 0.28) 0px 10px 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.16s, opacity 0.16s; opacity: 0;"><img src="chrome-extension://pegmadnffgnibgllihlfccjgcnaoekkg/icons/icon-32.png" alt="" width="22" height="22" draggable="false" style="pointer-events: none;"></button></html>
