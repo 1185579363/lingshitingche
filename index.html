@@ -52,19 +52,8 @@
       <a class="action" id="sms" href="sms:18966020855?body=%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%82%A8%E7%9A%84%E7%88%B1%E8%BD%A6%EF%BC%88%E6%B5%99D%C2%B7J3S33%EF%BC%89%E9%9C%80%E8%A6%81%E6%8C%AA%E4%B8%80%E4%B8%8B%EF%BC%8C%E9%BA%BB%E7%83%A6%E6%82%A8%E5%B0%BD%E5%BF%AB%E8%BF%87%E6%9D%A5%EF%BC%8C%E8%B0%A2%E8%B0%A2%EF%BC%81">短信通知车主挪车</a>
     </nav>
   </main>
-  <footer><button class="settings-link" id="settings" type="button">车主设置</button></footer>
-  <dialog id="settings-dialog" aria-labelledby="settings-title">
-    <form id="settings-form">
-      <h2 id="settings-title">车主设置</h2>
-      <p>填写联系方式，方便他人联系您挪车。</p>
-      <label>车牌号<input id="plate-input" name="plate" maxlength="12" required="" autocomplete="off" placeholder="例如：京NFC252"></label>
-      <label>联系电话<input id="phone-input" name="phone" type="tel" inputmode="tel" maxlength="20" pattern="[+0-9 ()-]{5,20}" placeholder="填写车主手机号" autocomplete="tel"></label>
-      <label>微信号<input id="wechat-input" name="wechat" maxlength="64" placeholder="填写微信号（选填）" autocomplete="off"></label>
-      <div class="modal-actions"><button type="button" id="cancel-settings">取消</button><button type="submit" class="primary">保存设置</button></div>
-      <div class="modal-actions"><button type="button" id="download">下载配置好的 HTML</button></div>
-      <div class="hint">保存仅在当前浏览器生效。给其他人使用时，请下载配置好的 HTML 再分享或部署。页面中的联系方式会对访问者可见。</div>
-    </form>
-  </dialog>
+  
+  
   <dialog id="wechat-dialog" aria-labelledby="wechat-title">
     <h2 id="wechat-title">微信联系车主</h2>
     <p>复制微信号后，打开微信搜索添加车主。</p>
@@ -74,7 +63,7 @@
   </dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <!-- 可直接修改这里的默认配置；也可在页面底部的“车主设置”中填写并下载。 -->
-  <script id="owner-config" type="application/json">{"plate":"浙D·J3S33","phone":"18966020855","wechat":"Getrichi_"}</script>
+  <script id="owner-config" type="application/json">{"plate":"浙D·J3S33","phone":"18966020855","wechat":"Getrichi_","visitor":true}</script>
   <script>
     (() => {
       'use strict';
@@ -82,7 +71,7 @@
       const defaults = JSON.parse($('owner-config').textContent);
       const storageKey = 'parking-owner-v1:' + JSON.stringify(defaults);
       let config = { ...defaults };
-      try { const saved = JSON.parse(localStorage.getItem(storageKey)); if (saved && typeof saved === 'object') for (const key of ['plate', 'phone', 'wechat']) if (typeof saved[key] === 'string') config[key] = saved[key]; } catch (_) {}
+      try { const saved = defaults.visitor ? null : JSON.parse(localStorage.getItem(storageKey)); if (saved && typeof saved === 'object') for (const key of ['plate', 'phone', 'wechat']) if (typeof saved[key] === 'string') config[key] = saved[key]; } catch (_) {}
       let timer;
       function toast(message) { clearTimeout(timer); $('toast').textContent = message; timer = setTimeout(() => { $('toast').textContent = ''; }, 3500); }
       function render() {
@@ -100,9 +89,9 @@
       }
       function collect() { return { plate: $('plate-input').value.trim().toUpperCase(), phone: $('phone-input').value.trim(), wechat: $('wechat-input').value.trim() }; }
       function validate() { if (!$('settings-form').reportValidity()) return false; if (!$('plate-input').value.trim()) { toast('请填写车牌号'); return false; } return true; }
-      $('settings').addEventListener('click', openSettings);
-      $('cancel-settings').addEventListener('click', () => $('settings-dialog').close());
-      $('settings-form').addEventListener('submit', event => {
+      $('settings')?.addEventListener('click', openSettings);
+      $('cancel-settings')?.addEventListener('click', () => $('settings-dialog').close());
+      $('settings-form')?.addEventListener('submit', event => {
         event.preventDefault(); if (!validate()) return;
         config = collect(); render();
         try { localStorage.setItem(storageKey, JSON.stringify(config)); toast('设置已保存'); }
@@ -110,7 +99,7 @@
         $('settings-dialog').close();
       });
       for (const id of ['call', 'sms']) $(id).addEventListener('click', event => {
-        if (!config.phone) { event.preventDefault(); toast('车主尚未填写联系电话，请在“车主设置”中填写'); }
+        if (!config.phone) { event.preventDefault(); toast(defaults.visitor ? '车主暂未提供联系电话' : '车主尚未填写联系电话，请在“车主设置”中填写'); }
       });
       $('wechat').addEventListener('click', () => {
         if (!config.wechat) { toast('车主尚未填写微信号，请尝试电话或短信联系'); return; }
@@ -121,13 +110,15 @@
         try { await navigator.clipboard.writeText(config.wechat); toast('微信号已复制，请打开微信搜索'); }
         catch (_) { const range = document.createRange(); range.selectNodeContents($('wechat-value')); const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range); toast('请长按微信号或按 Ctrl+C 复制'); }
       });
-      $('download').addEventListener('click', () => {
+      $('download')?.addEventListener('click', () => {
         if (!validate()) return;
-        const owner = collect();
+        const owner = { ...collect(), visitor: true };
         const clone = document.documentElement.cloneNode(true);
         clone.querySelector('#owner-config').textContent = JSON.stringify(owner).replace(/</g, '\\u003c');
         clone.querySelector('#plate').textContent = owner.plate;
         clone.querySelector('title').textContent = owner.plate + ' · 临时停车';
+        clone.querySelector('footer')?.remove();
+        clone.querySelector('#settings-dialog')?.remove();
         clone.querySelectorAll('dialog').forEach(node => node.removeAttribute('open'));
         clone.querySelectorAll('input').forEach(node => node.removeAttribute('value'));
         clone.querySelector('#toast').textContent = '';
